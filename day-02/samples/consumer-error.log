@@ -1,0 +1,27 @@
+2026-08-20 10:19:10,044 INFO  org.apache.kafka.clients.consumer.ConsumerConfig - ConsumerConfig values:
+	bootstrap.servers = [b-1-public.example.kafka.amazonaws.com:9196]
+	group.id = cg-lab-support
+	enable.auto.commit = true
+	max.poll.interval.ms = 300000
+	session.timeout.ms = 45000
+	auto.offset.reset = earliest
+
+2026-08-20 10:19:11,201 INFO  org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=order-consumer-lab, groupId=cg-lab-support] Discovered group coordinator b-2-public.example.kafka.amazonaws.com:9196 (id: 2147483646 rack: null)
+
+2026-08-20 10:19:11,388 INFO  org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=order-consumer-lab, groupId=cg-lab-support] Successfully joined group with generation Generation{generationId=7, memberId='order-consumer-lab-1', protocol='range'}
+
+2026-08-20 10:19:11,401 INFO  org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=order-consumer-lab, groupId=cg-lab-support] Adding newly assigned partitions: orders-lab-0, orders-lab-1, orders-lab-2
+
+2026-08-20 10:24:12,008 WARN  org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=order-consumer-lab, groupId=cg-lab-support] consumer poll timeout has expired. This means the time between subsequent calls to poll() was longer than the configured max.poll.interval.ms, which typically implies that the poll loop is living someplace other than the main processing thread. This can also happen when processing a large batch of records. Please increase poll interval or reduce max.poll.records.
+
+2026-08-20 10:24:12,110 INFO  org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=order-consumer-lab, groupId=cg-lab-support] Member order-consumer-lab-1 sending LeaveGroup request to coordinator b-2-public.example.kafka.amazonaws.com:9196 (id: 2147483646 rack: null) due to consumer poll timeout has expired.
+
+2026-08-20 10:24:12,448 ERROR org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=order-consumer-lab, groupId=cg-lab-support] Offset commit failed on partition orders-lab-0 at offset 1882: The coordinator is not aware of this member.
+org.apache.kafka.clients.consumer.CommitFailedException: Offset commit cannot be completed since the consumer is not part of an active group for auto partition assignment; it is likely that the consumer was kicked out of the group.
+
+2026-08-20 10:24:13,002 INFO  org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=order-consumer-lab, groupId=cg-lab-support] Revoke previously assigned partitions orders-lab-0, orders-lab-1, orders-lab-2
+
+2026-08-20 10:26:40,220 WARN  org.apache.kafka.clients.NetworkClient - [Consumer clientId=order-consumer-lab, groupId=cg-lab-support] Connection to node 2147483646 (b-2-public.example.kafka.amazonaws.com/203.0.113.20:9196) could not be established. Broker may not be available.
+
+2026-08-20 10:26:45,331 ERROR com.example.orders.OrderConsumer - consume loop stopped group=cg-lab-support
+org.apache.kafka.common.errors.DisconnectException: null

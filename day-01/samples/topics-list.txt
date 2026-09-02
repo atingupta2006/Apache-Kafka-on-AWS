@@ -1,0 +1,6 @@
+# Example shape of kafka-topics.bat --list
+
+orders-demo
+orders-user1
+orders-user2
+orders-user3

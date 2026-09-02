@@ -1,0 +1,42 @@
+{
+  "clusterName": "msk-lab-example",
+  "windowUtc": "2026-08-20T10:15:00Z/2026-08-20T10:30:00Z",
+  "note": "Synthetic dump for the assignment. Not a real account. Window aligns with day-02 sample logs (10:15-10:30 UTC), NOT day-05 scenario-5-app.log (~16:02). Names orders-lab / cg-lab-support / msk-lab-example are canned — do NOT paste them as live %TOPIC% / %GROUP% / CLUSTER_NAME; use your userN ids in the assignment header.",
+  "clusterState": "ACTIVE",
+  "brokerCount": 3,
+  "perBroker": [
+    {
+      "brokerId": "1",
+      "CpuIdle": { "Average": 12.4, "unit": "Percent" },
+      "KafkaDataLogsDiskUsed": { "Average": 81.0, "unit": "Percent" },
+      "MemoryUsed": { "Average": 74.0, "unit": "Percent" },
+      "SwapUsed": { "Average": 0.1, "unit": "Percent" }
+    },
+    {
+      "brokerId": "2",
+      "CpuIdle": { "Average": 71.2, "unit": "Percent" },
+      "KafkaDataLogsDiskUsed": { "Average": 44.0, "unit": "Percent" },
+      "MemoryUsed": { "Average": 51.0, "unit": "Percent" },
+      "SwapUsed": { "Average": 0.0, "unit": "Percent" }
+    },
+    {
+      "brokerId": "3",
+      "CpuIdle": { "Average": 68.8, "unit": "Percent" },
+      "KafkaDataLogsDiskUsed": { "Average": 46.0, "unit": "Percent" },
+      "MemoryUsed": { "Average": 49.0, "unit": "Percent" },
+      "SwapUsed": { "Average": 0.0, "unit": "Percent" }
+    }
+  ],
+  "cluster": {
+    "BytesInPerSec": { "Average": 18.4, "unit": "Bytes/Second" },
+    "BytesOutPerSec": { "Average": 2.1, "unit": "Bytes/Second" },
+    "OfflinePartitionsCount": { "Maximum": 0 }
+  },
+  "consumerLag": {
+    "group": "cg-lab-support",
+    "topic": "orders-lab",
+    "SumOffsetLag": { "Maximum": 18440 },
+    "MaxOffsetLag": { "Maximum": 9200 }
+  },
+  "topicDescribeNote": "orders-lab partition 0 Leader: 1 Replicas: 1,2,3 Isr: 1,2"
+}

@@ -1,0 +1,2 @@
+# Optional — for Jupyter lab notebooks only (Windows).
+jupyter>=1.0.0

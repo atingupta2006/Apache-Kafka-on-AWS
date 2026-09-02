@@ -1,0 +1,11 @@
+# Copy this file to: %USERPROFILE%\client-scram.properties
+# Then edit the jaas line:
+#   1. Set username to YOUR login id (user1, user2, user3, …) — keep the double quotes.
+#   2. Replace <password> with the SCRAM password your trainer gave you.
+#      Example: password="Abcd1234!"
+#   3. Keep the trailing semicolon after the closing quote.
+#   4. Save as plain text. Keep this file on your lab VM only (it has a secret).
+#
+security.protocol=SASL_SSL
+sasl.mechanism=SCRAM-SHA-512
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username="user1" password="<password>";

@@ -1,0 +1,26 @@
+2026-08-20 10:14:02,101 INFO  org.apache.kafka.clients.producer.ProducerConfig - ProducerConfig values:
+	acks = all
+	bootstrap.servers = [b-1-public.example.kafka.amazonaws.com:9196]
+	delivery.timeout.ms = 120000
+	enable.idempotence = false
+	retries = 5
+	retry.backoff.ms = 100
+	request.timeout.ms = 30000
+
+2026-08-20 10:14:03,220 INFO  org.apache.kafka.clients.Metadata - [Producer clientId=order-producer-lab] Cluster ID: msk-lab-demo
+
+2026-08-20 10:18:41,004 WARN  org.apache.kafka.clients.NetworkClient - [Producer clientId=order-producer-lab] Connection to node 1 (b-1-public.example.kafka.amazonaws.com/203.0.113.10:9196) could not be established. Broker may not be available.
+
+2026-08-20 10:18:41,188 INFO  org.apache.kafka.clients.NetworkClient - [Producer clientId=order-producer-lab] Give up sending metadata request since no node is available
+
+2026-08-20 10:18:46,201 WARN  org.apache.kafka.clients.producer.internals.Sender - [Producer clientId=order-producer-lab] Got error produce response with correlation id 184 on topic-partition orders-lab-0, retrying (remaining retries 4). Error: NOT_LEADER_OR_FOLLOWER
+
+2026-08-20 10:18:46,402 WARN  org.apache.kafka.clients.producer.internals.Sender - [Producer clientId=order-producer-lab] Got error produce response with correlation id 185 on topic-partition orders-lab-0, retrying (remaining retries 3). Error: NOT_LEADER_OR_FOLLOWER
+
+2026-08-20 10:18:51,011 WARN  org.apache.kafka.clients.NetworkClient - [Producer clientId=order-producer-lab] Error connecting to node b-1-public.example.kafka.amazonaws.com:9196 (id: 1 rack: null)
+
+2026-08-20 10:20:42,118 ERROR org.apache.kafka.clients.producer.internals.ErrorLoggingCallback - Error when sending message to topic orders-lab with key: order-4401, value: 86 bytes
+org.apache.kafka.common.errors.TimeoutException: Expiring 1 record(s) for orders-lab-0:120000 ms has passed since batch creation
+
+2026-08-20 10:20:42,119 ERROR com.example.orders.OrderProducer - publish failed topic=orders-lab key=order-4401
+org.apache.kafka.common.errors.TimeoutException: Expiring 1 record(s) for orders-lab-0:120000 ms has passed since batch creation

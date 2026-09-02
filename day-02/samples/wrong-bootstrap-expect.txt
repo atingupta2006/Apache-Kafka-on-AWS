@@ -1,0 +1,13 @@
+# Expected symptoms — wrong bootstrap (support reference, not a command to run on production)
+
+Common student/lab mistakes:
+  - Missing "-public" in hostname (private broker string from aws kafka get-bootstrap-brokers)
+  - Wrong port :9096 instead of public SCRAM :9196
+  - Typo in hostname
+
+Typical client errors (exact text varies):
+  - Connection to node ... could not be established. Broker may not be available.
+  - DisconnectException / TimeoutException on metadata or produce
+  - SASL authentication failed (wrong port/listener mix)
+
+Fix: use trainer/board BOOTSTRAP — hostname contains "-public" and port 9196 for SCRAM from off-VPC Windows lab VM.
