@@ -3,7 +3,9 @@
 Topic: `<your-topic>` (for example `orders-user3`)
 Group: `<your-consumer-group>` (for example `cg-user3-support`)
 
-Write this as a change record someone else could follow.
+**Why this is written down.** On a real incident the person who runs the recovery is often not the person who reviews it afterwards. A change record lets someone else repeat your steps, see what the system looked like before and after, and undo the change if needed. Filling this in is also the fastest way to notice a step you skipped.
+
+Write it as a record someone else could follow without asking you questions.
 
 ---
 
@@ -84,6 +86,6 @@ At least one action you deliberately avoided, with the reason.
 
 ## 9 — Judgement question
 
-A colleague asks you to reset a production group to `--to-earliest` because "a few orders are missing."
+A colleague asks you to reset a production group to `--to-earliest` because “a few orders are missing.”
 
 Write the two or three questions you would ask before touching anything, and say which reset target you would probably recommend instead.
