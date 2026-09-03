@@ -175,9 +175,9 @@ tar -xzf kafka_2.13-3.8.1.tgz -C C:\kafka
 
 Most class VMs should use the **7-Zip** steps above.
 
-#### 0.6 AWS MSK IAM auth jar (needed Day 4+)
+#### 0.6 AWS MSK IAM auth jar (needed Day 4 §4b on **your own Windows VM**)
 
-Day 4 and Day 5 use the IAM listener on port **9198**. Download this jar **once** after Kafka is installed (section 0.5):
+Day 4 section **4b** (IAM listener **9198**) runs on each student’s **own Windows VM**, not on the shared Jupyter lab. Download this jar **once** after Kafka is installed (section 0.5):
 
 ```bat
 curl -L -o C:\kafka\kafka_2.13-3.8.1\libs\aws-msk-iam-auth.jar https://repo1.maven.org/maven2/software/amazon/msk/aws-msk-iam-auth/2.3.2/aws-msk-iam-auth-2.3.2-all.jar

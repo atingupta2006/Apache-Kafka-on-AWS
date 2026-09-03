@@ -1,0 +1,11 @@
+# Wrong listener: IAM bootstrap (:9198 public) with SCRAM client file.
+# Sample: UnsupportedSaslMechanismException.
+
+2026-08-24 11:53:48,560 ERROR org.apache.kafka.clients.NetworkClient - [AdminClient clientId=adminclient-1] Connection to node -2 (b-2-public.example.kafka.amazonaws.com/203.0.113.20:9198) failed authentication due to: Client SASL mechanism 'SCRAM-SHA-512' not enabled in the server, enabled mechanisms are [OAUTHBEARER, AWS_MSK_IAM]
+org.apache.kafka.common.errors.UnsupportedSaslMechanismException: Client SASL mechanism 'SCRAM-SHA-512' not enabled in the server, enabled mechanisms are [OAUTHBEARER, AWS_MSK_IAM]
+
+# ACL deny Write on acl-lab-userN (example topic name in sample; yours is acl-lab-userN). Producer process may still exit 0.
+
+2026-08-24 11:53:37,398 WARN  org.apache.kafka.clients.NetworkClient - [Producer clientId=console-producer] Error while fetching metadata with correlation id 1 : {acl-lab-topic=TOPIC_AUTHORIZATION_FAILED}
+2026-08-24 11:53:37,402 ERROR org.apache.kafka.clients.producer.internals.ErrorLoggingCallback - Error when sending message to topic acl-lab-topic with key: null, value: 10 bytes
+org.apache.kafka.common.errors.TopicAuthorizationException: Not authorized to access topics: [acl-lab-topic]

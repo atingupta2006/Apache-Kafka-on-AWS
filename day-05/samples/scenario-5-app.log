@@ -1,0 +1,14 @@
+2026-08-20 16:02:01,009 INFO  com.example.orders.OrderProducer - starting producer topic=orders-lab acks=all
+2026-08-20 16:02:18,441 WARN  org.apache.kafka.clients.producer.internals.Sender - [Producer clientId=order-producer-lab] Got error produce response with correlation id 902 on topic-partition orders-lab-0, retrying (remaining retries 3). Error: NOT_LEADER_OR_FOLLOWER
+2026-08-20 16:04:18,880 ERROR com.example.orders.OrderProducer - publish failed key=order-8801
+org.apache.kafka.common.errors.TimeoutException: Expiring 1 record(s) for orders-lab-0:120000 ms has passed since batch creation
+
+2026-08-20 16:05:02,100 INFO  com.example.orders.OrderConsumer - poll loop group=cg-lab-support
+2026-08-20 16:05:40,212 WARN  org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=order-consumer-lab, groupId=cg-lab-support] consumer poll timeout has expired.
+2026-08-20 16:05:40,440 ERROR org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - Offset commit failed on partition orders-lab-0
+org.apache.kafka.clients.consumer.CommitFailedException: Offset commit cannot be completed since the consumer is not part of an active group for auto partition assignment
+
+2026-08-20 16:08:11,003 ERROR com.example.orders.OrderConsumer - Missing order-7700 in downstream DB; last committed offset on partition 0 is 9100
+2026-08-20 16:08:11,004 INFO  com.example.orders.OrderConsumer - will not reset offsets automatically
+
+2026-08-20 16:09:44,200 WARN  org.apache.kafka.clients.NetworkClient - Connection to node 1 (b-1-public.example.kafka.amazonaws.com/203.0.113.10:9196) could not be established. Broker may not be available.

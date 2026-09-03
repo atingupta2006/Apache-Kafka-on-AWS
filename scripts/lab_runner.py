@@ -23,14 +23,33 @@ KAFKA_HOME = (
 )
 KAFKA_LIBS = str(KAFKA_HOME / "libs" / "*")
 _default_session = Path.home() / "set-kafka-lab.bat"
-SESSION_BAT = Path(os.environ["LAB_SESSION_BAT"]) if os.environ.get("LAB_SESSION_BAT") else _default_session
+
+
+def session_bat_path() -> Path:
+    """Resolve SCRAM session file — env var, or students/userN folder on shared VM lab."""
+    if os.environ.get("LAB_SESSION_BAT"):
+        return Path(os.environ["LAB_SESSION_BAT"])
+    if IS_WINDOWS:
+        cwd = str(Path.cwd()).replace("\\", "/")
+        m = re.search(r"/students/(user\d+)(?:/|$)", cwd, re.IGNORECASE)
+        if m:
+            for cand in (
+                Path(rf"C:\kafka-lab\sessions\{m.group(1)}\set-kafka-lab.bat"),
+                Path(rf"C:\Users\{m.group(1)}\set-kafka-lab.bat"),
+            ):
+                if cand.is_file():
+                    return cand
+    return _default_session
+
+
+SESSION_BAT = session_bat_path()  # default at import; load_lab_env re-resolves
 SET_LINE = re.compile(r"^set\s+([A-Za-z_][A-Za-z0-9_]*)=(.*)$", re.IGNORECASE)
 DEFAULT_JAVA_HOME = r"C:\Java\jdk-21" if IS_WINDOWS else "/usr/lib/jvm/java-21-openjdk-amd64"
 
 
 def load_lab_env(session: Path | None = None) -> dict[str, str]:
     """Parse set-kafka-lab.bat into a dict."""
-    path = session or SESSION_BAT
+    path = session or session_bat_path()
     if not path.is_file():
         raise FileNotFoundError(
             f"Lab session not found: {path}\n"
