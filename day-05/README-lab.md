@@ -7,4 +7,4 @@ Optional Jupyter: [lab.ipynb](lab.ipynb).
 Theory: [notes.md](notes.md). Checklist: [samples/ops-checklist.md](samples/ops-checklist.md).  
 Assignment: [samples/assignment-scenarios.md](samples/assignment-scenarios.md).
 
-CloudWatch: use **AWS Console** (not AWS CLI) unless the trainer says otherwise.
+CloudWatch: prefer **AWS Console** (not AWS CLI) for the metrics views in this day.

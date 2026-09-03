@@ -72,7 +72,7 @@ Paste the dry-run table exactly as printed — partition and proposed new offset
 |----------|-------------|
 | Exception while deny was active | |
 | Would an offset reset have fixed it? | |
-| What fixed it? | |
+| What restored Write (Deny removed)? | |
 
 ---
 

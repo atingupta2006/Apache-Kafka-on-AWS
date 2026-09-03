@@ -2,12 +2,19 @@
 
 **Where you work:** your own Windows 10 PC / VM (same machine as Days 1–3).  
 **Shell:** **Command Prompt (CMD) only** — not PowerShell.  
-**Theory:** [notes.md](notes.md). Optional Jupyter: [lab.ipynb](lab.ipynb) (same steps).
+**Theory / story:** [notes.md](notes.md) — read **Story for today** once before the labs. Optional Jupyter: [lab.ipynb](lab.ipynb) (same steps).
 
-Prefer **AWS Console** for cluster/IAM checks: [samples/msk-iam-console.md](samples/msk-iam-console.md).  
-Kafka produce/consume/ACL/offset work stays on **CMD**.
+Kafka produce/consume/ACL/offset work is on **CMD**. Optional glance at public ports in Console: [samples/msk-iam-console.md](samples/msk-iam-console.md).
 
-This class cluster already has **SCRAM + IAM** (ports **9196** / **9198**). You do not create MSK in class.
+### Lab background (short)
+
+You share one MSK cluster with other seats, like teams sharing production brokers. Your seat owns `orders-userN` + `cg-userN-support`. Offset reset rewrites **that group’s bookmark** — if you point the command at another seat’s group, you create an incident for them.
+
+| Today’s work | Use these | Leave alone |
+|--------------|-----------|-------------|
+| Config, reset, replay | `%TOPIC%` + `%GROUP%` | Other seats’ groups / topics |
+| ACL deny / restore | `%ACL_TOPIC%` only | Do not practice Deny on `%TOPIC%` |
+| Before any reset | Stop your own `consume.bat` | — |
 
 ---
 
@@ -29,15 +36,13 @@ echo BOOTSTRAP_IAM=%BOOTSTRAP_IAM%
 `BOOTSTRAP` …**:9196**, `BOOTSTRAP_IAM` …**:9198**.  
 If empty → run `scripts\start-lab.bat` once, then `set-kafka-lab.bat` again.
 
-**Hard rules**
-
-- Reset offsets only on **your** `%GROUP%` + `%TOPIC%`.
-- ACL experiments only on **`%ACL_TOPIC%`**.
-- Close any running `consume.bat` before offset reset.
+Those four names are *your* team’s slice of the shared cluster. Confirm they match your login before any reset or ACL step.
 
 ---
 
 ## 1. Review topic configuration
+
+Support story: before you touch offsets, confirm what the topic still holds (RF, ISR, retention defaults).
 
 ```bat
 kafka-topics.bat --bootstrap-server %BOOTSTRAP% --command-config %CLIENT% --topic %TOPIC% --describe
@@ -55,11 +60,15 @@ kafka-configs.bat --bootstrap-server %BOOTSTRAP% --command-config %CLIENT% --ent
 
 ## 2. Reset consumer offsets
 
-**Stop consumers first.**
+Support story: “Our consumer already passed the messages we need.” You rewind **your** group’s bookmark on **your** topic — same change control you would use in production (dry-run first).
+
+**Stop your consumers first** (Kafka often refuses reset while the group is active).
 
 ```bat
 kafka-consumer-groups.bat --bootstrap-server %BOOTSTRAP% --command-config %CLIENT% --group %GROUP% --describe
 ```
+
+Confirm the line shows **your** `%GROUP%` and partitions for **your** `%TOPIC%` only.
 
 **Dry-run** (nothing changes yet):
 
@@ -84,6 +93,8 @@ Lab uses `--to-earliest` to see the effect; real tickets usually use `--to-datet
 
 ## 3. Replay messages
 
+Moving the bookmark is not enough — start the consumer so it **reads again**. That is the replay.
+
 ```bat
 call %USERPROFILE%\Apache-Kafka-on-AWS\scripts\consume.bat --from-beginning --max-messages 25 --timeout-ms 60000
 ```
@@ -98,9 +109,7 @@ kafka-consumer-groups.bat --bootstrap-server %BOOTSTRAP% --command-config %CLIEN
 
 ## 4a. SCRAM ACLs on `%ACL_TOPIC%`
 
-Work only on **`%ACL_TOPIC%`** (`acl-lab-userN`).
-
-**How this lab mirrors production:** app teams produce/consume and diagnose errors. A **platform / ops** change to Kafka ACLs can break Write even when your SCRAM login still works. In class, the instructor applies that platform change during short **WAIT** pauses (often screen-shared). You keep the same client file and only run the produce/list steps below.
+**How this lab mirrors production:** support keeps the same SCRAM client while **ops / platform** changes Write ACLs. Produce can fail with `TopicAuthorizationException` even though login still works. Practice on **`%ACL_TOPIC%`** (`acl-lab-userN`) so the drill does not break your orders recovery path.
 
 ### Steps
 
@@ -116,7 +125,7 @@ kafka-acls.bat --bootstrap-server %BOOTSTRAP% --command-config %CLIENT% --list -
 call %USERPROFILE%\Apache-Kafka-on-AWS\scripts\produce.bat %ACL_TOPIC% acl-ok
 ```
 
-**WAIT** until the instructor says **GO DENIED** (platform Deny Write is in place for your seat).
+**WAIT** until the room announces **GO DENIED** (Deny Write is in place for your seat).
 
 **C — produce must fail**
 
@@ -127,7 +136,7 @@ call %USERPROFILE%\Apache-Kafka-on-AWS\scripts\produce.bat %ACL_TOPIC% acl-denie
 **Expect:** `TopicAuthorizationException` (auth succeeded; Write was denied). Read the error text.  
 Optional: `--list` again and look for a **Deny** on Write for `User:%LOGIN%`.
 
-**WAIT** until the instructor says **GO RESTORED** (Deny removed).
+**WAIT** until the room announces **GO RESTORED** (Deny removed).
 
 **D — produce OK again**
 
@@ -135,12 +144,17 @@ Optional: `--list` again and look for a **Deny** on Write for `User:%LOGIN%`.
 call %USERPROFILE%\Apache-Kafka-on-AWS\scripts\produce.bat %ACL_TOPIC% acl-restored
 ```
 
-**Learning:** only the ACL changed. Offset reset would **not** fix `TopicAuthorizationException`.  
-AWS Console admin ≠ SCRAM permission to edit Kafka ACLs — that is a separate platform step (what the instructor just demonstrated).
+**Learning:** only the ACL changed. Offset reset would **not** fix `TopicAuthorizationException`.
 
 ---
 
 ## 4b. IAM listener (same Windows PC)
+
+**Background (why this exists):** SCRAM-only clusters force every app to carry a Kafka password and use Kafka ACLs. Many AWS apps already have an **IAM role** — a second password is awkward to rotate and audit. IAM auth lets those apps use AWS identity on port **9198**, with **IAM policies** for allow/deny.
+
+**Both or only IAM?** Neither is mandatory forever. **IAM alone is enough** if every client can use IAM. **Both** is common during migration and whenever some tools still use SCRAM (this class: Days 1–3 SCRAM, Day 4 also opens the IAM door). Full story: [notes.md](notes.md) — *IAM authentication overview*.
+
+Wrong client file on the IAM port is a common support mistake — you will force that failure once, then list topics the correct way.
 
 ### One-time prep (if not done on Day 1)
 
@@ -150,7 +164,7 @@ call %USERPROFILE%\Apache-Kafka-on-AWS\scripts\install-iam-jar.bat
 dir C:\kafka\kafka_2.13-3.8.1\libs\aws-msk-iam-auth.jar
 ```
 
-Confirm `aws configure` already works on this PC. Optional Console check: [samples/msk-iam-console.md](samples/msk-iam-console.md).
+Confirm `aws configure` already works on this PC.
 
 ### Required — wrong mix (must fail)
 
@@ -167,7 +181,7 @@ set CLASSPATH=C:\kafka\kafka_2.13-3.8.1\libs\aws-msk-iam-auth.jar;%CLASSPATH%
 kafka-topics.bat --bootstrap-server %BOOTSTRAP_IAM% --command-config %CLIENT_IAM% --list
 ```
 
-With **admin** AWS users this usually lists topics. If it errors, paste the error for the trainer — SCRAM sections are still complete.  
+**Expect:** a topic list (or note the full error text if it fails).  
 Do **not** point `%CLIENT_IAM%` at port **9196**.
 
 ---
@@ -184,6 +198,6 @@ Fill [samples/assignment-recovery.md](samples/assignment-recovery.md).
 |---------|------------|
 | Empty variables | `start-lab.bat` once, then `set-kafka-lab.bat` |
 | Reset refused | Stop consumers; dry-run → execute again |
-| ACL produce denied before GO DENIED | Wait for instructor; do not change offsets |
+| ACL produce before GO DENIED | Wait for the announcement; do not change offsets |
 | IAM jar missing | `install-iam-jar.bat` |
 | Hang | Confirm `-public:9196` or `:9198`, not private `:9096` |
